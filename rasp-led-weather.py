@@ -25,15 +25,14 @@ from gi.repository import GWeather
 gi.require_version('Geoclue', '2.0')
 from gi.repository import Geoclue
 
-from gpiozero import RGBLED
-
 from time import sleep
 from pins import Pins
+from led import LED
 
 class LEDWeather:
     def __init__(self):
-        self.led = RGBLED(Pins.RED, Pins.GREEN, Pins.BLUE)
-        self.led.off()
+        self.led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
+        self.led.blink((1, 1, 1))
         self.simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
                                          Geoclue.AccuracyLevel.EXACT,
                                          None,
@@ -57,23 +56,12 @@ class LEDWeather:
 
     def on_weather_updated(self, info, data):
         print("Now:")
-        self.show_weather(info)
+        self.led.show_weather(info)
         sleep(15)
 
         forecasts = info.get_forecast_list()
         print("Tomorrow:")
-        self.show_weather(forecasts[24])
-
-    def show_weather(self, info):
-        print('%s\n' % (info.get_weather_summary()))
-        [ret, sky] = info.get_value_sky()
-        if not ret:
-            return
-
-        if sky <= GWeather.Sky.SCATTERED:
-            self.led.value = (1, 1, 0)
-        else:
-            self.led.value = (0, 0, 1)
+        self.led.show_weather(forecasts[24])
 
 weather = LEDWeather()
 main_loop = GLib.MainLoop()
