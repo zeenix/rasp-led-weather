@@ -28,12 +28,7 @@ from gi.repository import Geoclue
 from gpiozero import RGBLED
 
 from time import sleep
-
-# These are how I connected the RGB LED to my Pi's GPIO
-class Pins:
-    RED = 18
-    GREEN = 23
-    BLUE = 24
+from pins import Pins
 
 class LEDWeather:
     def __init__(self):

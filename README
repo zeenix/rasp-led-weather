@@ -21,3 +21,6 @@ Here is how it's supposed to behave:
   * cyan:         Light rain
   * blue:         Heavy rain
   * white:        Snow
+
+The pin configuration is set in pins.py. Just update the pin numbers as per your
+configuration.
