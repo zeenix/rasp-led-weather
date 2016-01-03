@@ -31,7 +31,7 @@ from led import LED
 class LEDWeather:
     def __init__(self):
         self.led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
-        self.led.blink((1, 1, 1))
+        self.led.blink((1, 0, 0))
         self.simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
                                          Geoclue.AccuracyLevel.EXACT,
                                          None,
