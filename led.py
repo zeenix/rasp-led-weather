@@ -24,24 +24,29 @@ from gi.repository import GWeather
 
 import gpiozero as gp
 
+from time import sleep
+from threading import Thread
+
 class LED(gp.RGBLED):
     def __init__(self, red, green, blue):
         gp.RGBLED.__init__(self, red, green, blue)
         self.off()
-        self._blink_source = 0
+        self._blink_color = None
+        self._blink_thread = None
 
     def blink(self, color):
         self.stop_blink()
         self._blink_color = color
-        self._blink_source = GLib.timeout_add(500, self._blink_cb)
+        self._blink_thread = Thread(target=self._blink_func)
+        self._blink_thread.start()
 
     def stop_blink(self):
-        self.value = (0, 0, 0)
-        if self._blink_source == 0:
+        if self._blink_color == None:
             return
 
-        GLib.source_remove(self._blink_source)
-        self._blink_source = 0
+        self._blink_color = None
+        self._blink_thread.join()
+        self.value = (0, 0, 0)
 
     def show_weather(self, info):
         self.stop_blink()
@@ -56,10 +61,10 @@ class LED(gp.RGBLED):
         else:
             self.value = (0, 0, 1)
 
-    def _blink_cb(self):
-        if self.value == (0, 0, 0):
-            self.value = self._blink_color
-        else:
-            self.value = (0, 0, 0)
-
-        return True
+    def _blink_func(self):
+        while self._blink_color != None:
+            if self.value == (0, 0, 0):
+                self.value = self._blink_color
+            else:
+                self.value = (0, 0, 0)
+            sleep(1)
