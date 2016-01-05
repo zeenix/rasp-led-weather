@@ -65,7 +65,7 @@ class LEDWeather:
         self._index = 0
         self.show_weather()
 
-        self._show_weather_timeout = GLib.timeout_add_seconds(15, self.show_weather)
+        self._show_weather_timeout = GLib.timeout_add_seconds(5, self.show_weather)
 
     def show_weather(self):
         forecasts = self.info.get_forecast_list()

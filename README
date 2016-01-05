@@ -11,7 +11,7 @@ Here is how it's supposed to behave:
 * blink red 3 times, each time weather is updated (first time on launch).
 * forecast is updated every hour.
 * forecast is shown for every 12 hours, for next 3 days.
-* each forecast is shown for 15 seconds.
+* each forecast is shown for 5 seconds.
 * blink green N times before showing each forecast, where N is index of
   12 hours. E.g 2 blinks mean the following forecast is for 24 hours from
   now.
