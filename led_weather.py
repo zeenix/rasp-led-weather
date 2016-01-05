@@ -94,7 +94,8 @@ class LEDWeather:
 
     def _show_weather(self):
         forecasts = self.info.get_forecast_list()
-        if self._index >= len(forecasts) or self._index >= 72:
+        current_time = self._get_current_forecast_time()
+        if self._index >= len(forecasts) or current_time >= time.time() + 3600 * 72:
             self._index = 0
             self._led.show_weather(None)
 
