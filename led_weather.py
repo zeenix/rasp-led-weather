@@ -25,6 +25,7 @@ from gi.repository import GWeather
 gi.require_version('Geoclue', '2.0')
 from gi.repository import Geoclue
 
+import time
 from pins import Pins
 from led import LED
 
@@ -86,11 +87,52 @@ class LEDWeather:
 
             return True;
 
-        print("Weather in %d hours" % self._index)
-        self._led.show_weather(forecasts[self._index])
-        self._index = self._index + 12
+        current_time = self._get_current_forecast_time()
+        str = time.strftime("%c", time.gmtime(current_time))
+        print("Weather at %s" % str)
+        if self._index == 0:
+            self._led.show_weather(self.info)
+        else:
+            self._led.show_weather(forecasts[self._index])
+
+        self._set_next_index()
 
         return True
+
+    def _set_next_index(self):
+        forecasts = self.info.get_forecast_list()
+        current_time = self._get_current_forecast_time()
+
+        if current_time >= time.time() + 3600 * 72:
+            # Reset on passing 3 days
+            self._index = 0
+            return
+
+        index = self._index
+        next_index = -1
+        while index < len(forecasts):
+            [ret, timestamp] = forecasts[index].get_value_update()
+            if ret and timestamp >= current_time + 3600 * 12:
+                next_index = index
+            else:
+                index = index + 1
+
+        if next_index == -1:
+            self._index = 0
+        else:
+            self._index = next_index
+
+    def _get_current_forecast_time(self):
+        if self._index == 0:
+            return time.time()
+
+        forecasts = self.info.get_forecast_list()
+        [ret, timestamp] = forecasts[self._index].get_value_update()
+        if not ret:
+            # Shouldn't be happening but let's be prepared
+            return time.time()
+
+        return timestamp
 
     def _unshedule_weather_show(self):
         if self._show_timeout == 0:
