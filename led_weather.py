@@ -25,7 +25,6 @@ from gi.repository import GWeather
 gi.require_version('Geoclue', '2.0')
 from gi.repository import Geoclue
 
-from time import sleep
 from pins import Pins
 from led import LED
 
