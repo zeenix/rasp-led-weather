@@ -21,6 +21,12 @@ from gi.repository import GLib
 
 from led_weather import LEDWeather
 
+from threading import Thread
+
 weather = LEDWeather()
 main_loop = GLib.MainLoop()
-main_loop.run()
+
+try:
+    main_loop.run()
+except KeyboardInterrupt:
+    weather.close()
