@@ -32,23 +32,23 @@ from led import LED
 class LEDWeather:
     def __init__(self):
         self._show_weather_timeout = 0
-        self.led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
-        self.led.blink((1, 0, 0))
-        self.simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
-                                         Geoclue.AccuracyLevel.EXACT,
-                                         None,
-                                         self.on_simple_ready)
+        self._led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
+        self._led.blink((1, 0, 0))
+        self._simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
+                                          Geoclue.AccuracyLevel.EXACT,
+                                          None,
+                                          self._on_simple_ready)
 
     def close(self):
-        self.unshedule_weather_show()
-        self.led.close()
+        self._unshedule_weather_show()
+        self._led.close()
 
-    def on_simple_ready(self, simple, data):
+    def _on_simple_ready(self, simple, data):
         location = simple.get_location()
 
-        self.on_location_updated(location)
+        self._on_location_updated(location)
 
-    def on_location_updated(self, location):
+    def _on_location_updated(self, location):
         latitude = location.get_property('latitude')
         longitude = location.get_property('longitude')
 
@@ -57,31 +57,31 @@ class LEDWeather:
         self.info = GWeather.Info.new(city, GWeather.ForecastType.LIST)
         self.info.set_enabled_providers(GWeather.Provider.METAR | GWeather.Provider.YR_NO)
 
-        self.info.connect('updated', self.on_weather_updated, None)
+        self.info.connect('updated', self._on_weather_updated, None)
 
-    def on_weather_updated(self, info, data):
-        self.unshedule_weather_show()
+    def _on_weather_updated(self, info, data):
+        self._unshedule_weather_show()
 
         self._index = 0
-        self.show_weather()
+        self._show_weather()
 
-        self._show_weather_timeout = GLib.timeout_add_seconds(5, self.show_weather)
+        self._show_weather_timeout = GLib.timeout_add_seconds(5, self._show_weather)
 
-    def show_weather(self):
+    def _show_weather(self):
         forecasts = self.info.get_forecast_list()
         if self._index >= len(forecasts) or self._index >= 72:
             self._index = 0
-            self.led.show_weather(None)
+            self._led.show_weather(None)
 
             return True;
 
         print("Weather in %d hours" % self._index)
-        self.led.show_weather(forecasts[self._index])
+        self._led.show_weather(forecasts[self._index])
         self._index = self._index + 12
 
         return True
 
-    def unshedule_weather_show(self):
+    def _unshedule_weather_show(self):
         if self._show_weather_timeout == 0:
             return
 
