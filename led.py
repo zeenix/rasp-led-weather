@@ -34,6 +34,10 @@ class LED(gp.RGBLED):
         self._blink_color = None
         self._blink_thread = None
 
+    def close(self):
+        self.stop_blink()
+        gp.RGBLED.close(self)
+
     def blink(self, color):
         self.stop_blink()
         self._blink_color = color
