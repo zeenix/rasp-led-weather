@@ -32,6 +32,7 @@ from led import LED
 class LEDWeather:
     def __init__(self):
         self._show_timeout = 0
+        self._first_update = True
         self._led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
         self._led.blink((1, 0, 0))
         self._simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
@@ -58,12 +59,23 @@ class LEDWeather:
         self.info.set_enabled_providers(GWeather.Provider.METAR | GWeather.Provider.YR_NO)
 
         self.info.connect('updated', self._on_weather_updated, None)
+        self._update_timeout = GLib.timeout_add_seconds(3600, self._on_weather_update_timeout)
+
+    def _on_weather_update_timeout(self):
+        self._unshedule_weather_show()
+        self._led.blink((1, 0, 0))
+        self.info.update()
+
+        return True
 
     def _on_weather_updated(self, info, data):
         self._unshedule_weather_show()
 
         self._index = 0
-        self._show_weather()
+
+        if self._first_update:
+            self._show_weather()
+            self._first_update = False
 
         self._show_timeout = GLib.timeout_add_seconds(5, self._show_weather)
 
