@@ -37,6 +37,9 @@ class LEDWeather:
                                          None,
                                          self.on_simple_ready)
 
+    def close(self):
+        self.led.close()
+
     def on_simple_ready(self, simple, data):
         location = simple.get_location()
 
