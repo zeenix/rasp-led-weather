@@ -15,6 +15,7 @@ Here is how it's supposed to behave:
 * blink green N times before showing each forecast, where N is index of
   12 hours. E.g 2 blinks mean the following forecast is for 24 hours from
   now.
+* steady unlit LED after each iteration of weather forecast.
 * Forecast is shown as colors:
   * yellow:       Sunny/Clear sky
   * green yellow: Cloudy (> 5 oktas)

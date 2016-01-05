@@ -70,7 +70,10 @@ class LEDWeather:
     def show_weather(self):
         forecasts = self.info.get_forecast_list()
         if self._index >= len(forecasts) or self._index >= 72:
-           self._index = 0
+            self._index = 0
+            self.led.show_weather(None)
+
+            return True;
 
         print("Weather in %d hours" % self._index)
         self.led.show_weather(forecasts[self._index])

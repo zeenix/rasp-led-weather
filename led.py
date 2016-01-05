@@ -55,6 +55,11 @@ class LED(gp.RGBLED):
     def show_weather(self, info):
         self.stop_blink()
 
+        if info == None:
+            # No weather => unlit LED
+            self.value = (0, 0, 0)
+            return
+
         print('%s\n' % (info.get_weather_summary()))
         [ret, sky] = info.get_value_sky()
         if not ret:
