@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from gi.repository import GLib
 import gi
 gi.require_version('GWeather', '3.0')
 from gi.repository import GWeather
@@ -30,6 +31,7 @@ from led import LED
 
 class LEDWeather:
     def __init__(self):
+        self._show_weather_timeout = 0
         self.led = LED(Pins.RED, Pins.GREEN, Pins.BLUE)
         self.led.blink((1, 0, 0))
         self.simple = Geoclue.Simple.new('geoclue-where-am-i', # Let's cheat
@@ -38,6 +40,7 @@ class LEDWeather:
                                          self.on_simple_ready)
 
     def close(self):
+        self.unshedule_weather_show()
         self.led.close()
 
     def on_simple_ready(self, simple, data):
@@ -57,10 +60,27 @@ class LEDWeather:
         self.info.connect('updated', self.on_weather_updated, None)
 
     def on_weather_updated(self, info, data):
-        print("Now:")
-        self.led.show_weather(info)
-        sleep(15)
+        self.unshedule_weather_show()
 
-        forecasts = info.get_forecast_list()
-        print("Tomorrow:")
-        self.led.show_weather(forecasts[24])
+        self._index = 0
+        self.show_weather()
+
+        self._show_weather_timeout = GLib.timeout_add_seconds(15, self.show_weather)
+
+    def show_weather(self):
+        forecasts = self.info.get_forecast_list()
+        if self._index >= len(forecasts) or self._index >= 72:
+           self._index = 0
+
+        print("Weather in %d hours" % self._index)
+        self.led.show_weather(forecasts[self._index])
+        self._index = self._index + 12
+
+        return True
+
+    def unshedule_weather_show(self):
+        if self._show_weather_timeout == 0:
+            return
+
+        GLib.source_remove(self._show_weather_timeout)
+        self._show_weather_timeout = 0
