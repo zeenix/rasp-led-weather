@@ -76,4 +76,4 @@ class LED(gp.RGBLED):
                 self.value = self._blink_color
             else:
                 self.value = (0, 0, 0)
-            sleep(1)
+            sleep(0.5)
