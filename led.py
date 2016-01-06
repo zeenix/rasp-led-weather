@@ -28,16 +28,18 @@ class LED(gp.RGBLED):
         self.off()
         self._blink_color = None
         self._blink_times = 0
+        self._blink_callback = None
         self._blink_thread = None
 
     def close(self):
         self.stop_blink()
         gp.RGBLED.close(self)
 
-    def blink(self, color, times=0):
+    def blink(self, color, times=0, callback=None):
         self.stop_blink()
         self._blink_color = color
         self._blink_times = times
+        self._blink_callback = callback
         self._blink_thread = Thread(target=self._blink_func)
         self._blink_thread.start()
 
@@ -48,6 +50,7 @@ class LED(gp.RGBLED):
         self._blink_color = None
         self._blink_thread.join()
         self.value = (0, 0, 0)
+        self._blink_callback = None
 
     def show_weather(self, info):
         self.stop_blink()
@@ -76,3 +79,5 @@ class LED(gp.RGBLED):
                 self.value = (0, 0, 0)
                 blinked = blinked + 1
             sleep(0.5)
+        if self._blink_callback != None:
+            GLib.idle_add(self._blink_callback)
