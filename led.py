@@ -22,6 +22,8 @@ import gpiozero as gp
 from time import sleep
 from threading import Thread
 
+from weather_color import WeatherColor
+
 class LED(gp.RGBLED):
     def __init__(self, red, green, blue):
         gp.RGBLED.__init__(self, red, green, blue)
@@ -66,9 +68,9 @@ class LED(gp.RGBLED):
             return
 
         if sky <= GWeather.Sky.SCATTERED:
-            self.value = (1, 1, 0)
+            self.value = WeatherColor.SUNNY
         else:
-            self.value = (0, 0, 1)
+            self.value = WeatherColor.HY_RAIN
 
     def _blink_func(self):
         blinked = 0
