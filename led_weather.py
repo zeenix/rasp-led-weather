@@ -80,7 +80,6 @@ class LEDWeather:
         forecast_time = self._get_current_forecast_time()
         n_blinks = round((forecast_time - time.time()) / 12 / 3600)
         if n_blinks > 0:
-            # blocks until blinking is done
             self._led.blink((0, 1, 0), n_blinks, self._on_blinking_done)
         else:
             self._on_blinking_done()
