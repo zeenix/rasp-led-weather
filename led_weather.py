@@ -109,6 +109,7 @@ class LEDWeather:
             [ret, timestamp] = forecasts[index].get_value_update()
             if ret and timestamp >= current_time + 3600 * 12:
                 next_index = index
+                break
             else:
                 index = index + 1
 
