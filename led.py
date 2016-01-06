@@ -27,15 +27,17 @@ class LED(gp.RGBLED):
         gp.RGBLED.__init__(self, red, green, blue)
         self.off()
         self._blink_color = None
+        self._blink_times = 0
         self._blink_thread = None
 
     def close(self):
         self.stop_blink()
         gp.RGBLED.close(self)
 
-    def blink(self, color):
+    def blink(self, color, times=0):
         self.stop_blink()
         self._blink_color = color
+        self._blink_times = times
         self._blink_thread = Thread(target=self._blink_func)
         self._blink_thread.start()
 
@@ -66,9 +68,11 @@ class LED(gp.RGBLED):
             self.value = (0, 0, 1)
 
     def _blink_func(self):
-        while self._blink_color != None:
+        blinked = 0
+        while self._blink_color != None and (self._blink_times == 0 or blinked <= self._blink_times):
             if self.value == (0, 0, 0):
                 self.value = self._blink_color
             else:
                 self.value = (0, 0, 0)
+                blinked = blinked + 1
             sleep(0.5)
