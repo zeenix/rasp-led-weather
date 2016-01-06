@@ -66,11 +66,20 @@ class LED(gp.RGBLED):
         [ret, sky] = info.get_value_sky()
         if not ret:
             return
+        [ret, phenomenon, qualifier] = info.get_value_conditions()
 
-        if sky <= GWeather.Sky.SCATTERED:
-            self.value = WeatherColor.SUNNY
+        if phenomenon == GWeather.ConditionPhenomenon.RAIN:
+            if qualifier == GWeather.ConditionQualifier.SHOWERS or \
+               qualifier == GWeather.ConditionQualifier.HEAVY:
+                self.value = WeatherColor.HY_RAIN
+            else:
+                self.value = WeatherColor.LT_RAIN
+        elif phenomenon == GWeather.ConditionPhenomenon.SNOW:
+            self.value = WeatherColor.SNOW
+        elif sky == GWeather.Sky.BROKEN or sky == GWeather.Sky.OVERCAST:
+            self.value = WeatherColor.CLOUDY
         else:
-            self.value = WeatherColor.HY_RAIN
+            self.value = WeatherColor.SUNNY
 
     def _blink_func(self):
         blinked = 0
