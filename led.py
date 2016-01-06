@@ -76,6 +76,9 @@ class LED(gp.RGBLED):
                 self.value = WeatherColor.LT_RAIN
         elif phenomenon == GWeather.ConditionPhenomenon.SNOW:
             self.value = WeatherColor.SNOW
+        elif phenomenon == GWeather.ConditionPhenomenon.FOG or \
+             phenomenon == GWeather.ConditionPhenomenon.HAZE:
+            self.value = WeatherColor.FOG
         elif sky == GWeather.Sky.BROKEN or sky == GWeather.Sky.OVERCAST:
             self.value = WeatherColor.CLOUDY
         else:

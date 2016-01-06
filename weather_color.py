@@ -15,6 +15,7 @@
 class WeatherColor:
     SUNNY   = (1, 1, 0)            # Yellow
     CLOUDY  = (0.6274, 0, 0.9411)  # Purple
+    FOG     = (0.6274, 0, 0.9411)  # Purple
     LT_RAIN = (0, 1, 1)            # Cyan
     HY_RAIN = (0, 0, 1)            # Blue
     SNOW    = (1, 1, 1)            # White
