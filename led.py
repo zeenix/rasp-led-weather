@@ -70,10 +70,10 @@ class LED(gp.RGBLED):
 
         if phenomenon == GWeather.ConditionPhenomenon.RAIN:
             if qualifier == GWeather.ConditionQualifier.SHOWERS or \
-               qualifier == GWeather.ConditionQualifier.HEAVY:
-                self.value = WeatherColor.HY_RAIN
-            else:
+               qualifier == GWeather.ConditionQualifier.LIGHT:
                 self.value = WeatherColor.LT_RAIN
+            else:
+                self.value = WeatherColor.HY_RAIN
         elif phenomenon == GWeather.ConditionPhenomenon.SNOW:
             self.value = WeatherColor.SNOW
         elif phenomenon == GWeather.ConditionPhenomenon.FOG or \
