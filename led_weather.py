@@ -71,8 +71,8 @@ class LEDWeather:
         if self._first_update:
             self._show_weather()
             self._first_update = False
-
-        self._show_timeout = GLib.timeout_add_seconds(5, self._on_show_weather_timeout)
+        else:
+            self._show_timeout = GLib.timeout_add_seconds(5, self._on_show_weather_timeout)
 
     def _on_show_weather_timeout(self):
         self._show_timeout = 0
@@ -80,15 +80,9 @@ class LEDWeather:
         forecast_time = self._get_current_forecast_time()
         n_blinks = round((forecast_time - time.time()) / 12 / 3600)
         if n_blinks > 0:
-            self._led.blink((0, 1, 0), n_blinks, self._on_blinking_done)
+            self._led.blink((0, 1, 0), n_blinks, self._show_weather)
         else:
-            self._on_blinking_done()
-
-        return False
-
-    def _on_blinking_done(self):
-        self._show_weather()
-        self._show_timeout = GLib.timeout_add_seconds(5, self._on_show_weather_timeout)
+            self._show_weather()
 
         return False
 
@@ -98,8 +92,9 @@ class LEDWeather:
         if self._index >= len(forecasts) or current_time >= time.time() + 3600 * 72:
             self._index = 0
             self._led.show_weather(None)
+            self._show_timeout = GLib.timeout_add_seconds(5, self._on_show_weather_timeout)
 
-            return
+            return False
 
         current_time = self._get_current_forecast_time()
         str = time.strftime("%c", time.gmtime(current_time))
