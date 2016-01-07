@@ -111,14 +111,13 @@ class LEDWeather:
 
         self._set_next_index()
 
+        self._show_timeout = GLib.timeout_add_seconds(5, self._on_show_weather_timeout)
+
+        return False
+
     def _set_next_index(self):
         forecasts = self.info.get_forecast_list()
         current_time = self._get_current_forecast_time()
-
-        if current_time >= time.time() + 3600 * 72:
-            # Reset on passing 3 days
-            self._index = 0
-            return
 
         index = self._index
         next_index = -1
