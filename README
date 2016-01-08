@@ -17,11 +17,11 @@ Here is how it's supposed to behave:
   now.
 * steady unlit LED after each iteration of weather forecast.
 * Forecast is shown as colors:
-  * yellow:       Sunny/Clear sky
-  * green yellow: Cloudy (> 5 oktas)
-  * cyan:         Light rain
-  * blue:         Heavy rain
-  * white:        Snow
+  * yellow: Sunny/Clear sky
+  * purple: Cloudy (>= 5 oktas) or foggy
+  * cyan:   Light rain
+  * blue:   Rain
+  * white:  Snow
 
 The pin configuration is set in pins.py. Just update the pin numbers as per your
 configuration.
